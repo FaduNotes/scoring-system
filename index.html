@@ -1,0 +1,82 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <title>Pencak Silat Scoring</title>
+  <style>
+    body{
+      font-family: Arial;
+      background:#111;
+      color:white;
+      text-align:center;
+      padding:20px;
+    }
+
+    .card{
+      background:#222;
+      padding:20px;
+      border-radius:15px;
+      margin:auto;
+      max-width:400px;
+    }
+
+    button{
+      padding:15px 25px;
+      margin:10px;
+      font-size:20px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    .red{background:red;color:white;}
+    .blue{background:blue;color:white;}
+
+    h1{
+      color:gold;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Pencak Silat Scoring System</h1>
+
+<div class="card">
+
+<h2>Red Corner</h2>
+<h1 id="redScore">0</h1>
+
+<button class="red" onclick="addRed()">
++1 Point
+</button>
+
+<hr>
+
+<h2>Blue Corner</h2>
+<h1 id="blueScore">0</h1>
+
+<button class="blue" onclick="addBlue()">
++1 Point
+</button>
+
+</div>
+
+<script>
+
+let red = 0;
+let blue = 0;
+
+function addRed(){
+  red++;
+  document.getElementById("redScore").innerText = red;
+}
+
+function addBlue(){
+  blue++;
+  document.getElementById("blueScore").innerText = blue;
+}
+
+</script>
+
+</body>
+</html>
