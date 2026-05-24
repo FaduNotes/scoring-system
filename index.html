@@ -1,82 +1,630 @@
  <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Pencak Silat Scoring</title>
-  <style>
-    body{
-      font-family: Arial;
-      background:#111;
-      color:white;
-      text-align:center;
-      padding:20px;
-    }
-
-    .card{
-      background:#222;
-      padding:20px;
-      border-radius:15px;
-      margin:auto;
-      max-width:400px;
-    }
-
-    button{
-      padding:15px 25px;
-      margin:10px;
-      font-size:20px;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-    }
-
-    .red{background:red;color:white;}
-    .blue{background:blue;color:white;}
-
-    h1{
-      color:gold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencak Silat Digital Scoring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            height: 100vh;
+            overflow: hidden;
+        }
+       .page {
+            display: none;
+            height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+        }
+       .page.active {
+            display: block;
+        }
+        #home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+        }
+       .logo {
+            font-size: 48px;
+            font-weight: 800;
+            color: #58a6ff;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+       .tagline {
+            color: #8b949e;
+            margin-bottom: 40px;
+        }
+       .menu-btn {
+            width: 80%;
+            max-width: 300px;
+            padding: 16px;
+            margin: 10px 0;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+       .menu-btn:hover {
+            background: #30363d;
+        }
+       .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #30363d;
+        }
+       .back-btn {
+            background: none;
+            border: none;
+            color: #58a6ff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+       .match-info {
+            background: #161b22;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+       .match-info input {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 60px;
+        }
+       .timer {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            margin: 15px 0;
+            color: #f0f6fc;
+        }
+       .round-info {
+            text-align: center;
+            color: #8b949e;
+            margin-bottom: 20px;
+        }
+       .scoreboard {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+       .fighter {
+            background: #161b22;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+       .red { border-top: 4px solid #f85149; }
+       .blue { border-top: 4px solid #58a6ff; }
+       .fighter-name {
+            font-size: 14px;
+            color: #8b949e;
+            margin-bottom: 5px;
+        }
+       .fighter-score {
+            font-size: 36px;
+            font-weight: 700;
+        }
+       .vs {
+            display: flex;
+            align-items: center;
+            color: #8b949e;
+        }
+       .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+       .jury-btn {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 12px 5px;
+            color: #c9d1d9;
+            font-size: 14px;
+            cursor: pointer;
+        }
+       .jury-btn:active {
+            background: #30363d;
+        }
+       .penalty-btn {
+            background: #da3633;
+            border: none;
+        }
+       .action-btn {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            background: #238636;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+       .action-btn.stop {
+            background: #da3633;
+        }
+       .action-btn:disabled {
+            background: #484f58;
+            cursor: not-allowed;
+        }
+       .round-btn {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            background: #1f6feb;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+       .status {
+            text-align: center;
+            color: #f78166;
+            font-size: 14px;
+            height: 20px;
+            margin: 10px 0;
+        }
+       .profile-card {
+            background: #161b22;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+       .profile-card h3 {
+            color: #58a6ff;
+            margin-bottom: 10px;
+        }
+        #final-result {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+       .winner {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+       .winner.red { color: #f85149; }
+       .winner.blue { color: #58a6ff; }
+    </style>
 </head>
-
 <body>
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <div class="logo">AADIL</div>
+        <div class="tagline">Pencak Silat Digital Scoring System</div>
+        <button class="menu-btn" onclick="showPage('match')">Start Match</button>
+        <button class="menu-btn" onclick="showPage('rules')">Rules & Violations</button>
+        <button class="menu-btn" onclick="showPage('about')">About</button>
+        <button class="menu-btn" onclick="showPage('contact')">Contact</button>
+    </div>
 
-<h1>Pencak Silat Scoring System</h1>
+    <!-- Match Page -->
+    <div id="match" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage('home')">← Menu</button>
+            <h2>TANDING MATCH</h2>
+            <div></div>
+        </div>
 
-<div class="card">
+        <div class="match-info">
+            <div>Match: <input type="text" id="matchNo" value="M001"></div>
+            <div>Round: <span id="currentRound">1</span>/3</div>
+        </div>
 
-<h2>Red Corner</h2>
-<h1 id="redScore">0</h1>
+        <div class="timer" id="timer">02:00</div>
+        <div class="round-info" id="roundStatus">Ready to Start</div>
 
-<button class="red" onclick="addRed()">
-+1 Point
-</button>
+        <div class="scoreboard">
+            <div class="fighter red">
+                <div class="fighter-name">RED</div>
+                <div class="fighter-score" id="redScore">0</div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="fighter blue">
+                <div class="fighter-name">BLUE</div>
+                <div class="fighter-score" id="blueScore">0</div>
+            </div>
+        </div>
 
-<hr>
+        <div class="controls">
+            <button class="jury-btn" onclick="addScore('jury1', 'red')">J1 +1 Red</button>
+            <button class="jury-btn" onclick="addScore('jury1', 'blue')">J1 +1 Blue</button>
+            <button class="jury-btn penalty-btn" onclick="addPenalty('red')">-1 Red</button>
 
-<h2>Blue Corner</h2>
-<h1 id="blueScore">0</h1>
+            <button class="jury-btn" onclick="addScore('jury2', 'red')">J2 +1 Red</button>
+            <button class="jury-btn" onclick="addScore('jury2', 'blue')">J2 +1 Blue</button>
+            <button class="jury-btn penalty-btn" onclick="addPenalty('blue')">-1 Blue</button>
 
-<button class="blue" onclick="addBlue()">
-+1 Point
-</button>
+            <button class="jury-btn" onclick="addScore('jury3', 'red')">J3 +1 Red</button>
+            <button class="jury-btn" onclick="addScore('jury3', 'blue')">J3 +1 Blue</button>
+            <button class="jury-btn" onclick="addScore('kp', 'red')">KP +1 Red</button>
+        </div>
 
-</div>
+        <div class="status" id="status"></div>
 
-<script>
+        <button class="action-btn" id="startBtn" onclick="startMatch()">START ROUND</button>
+        <button class="action-btn stop" id="stopBtn" onclick="stopMatch()" disabled>STOP</button>
+        <button class="round-btn" id="nextRoundBtn" onclick="nextRound()" style="display:none;">NEXT ROUND</button>
+        <button class="round-btn" id="finishBtn" onclick="finishMatch()" style="display:none;">FINISH MATCH</button>
 
-let red = 0;
-let blue = 0;
+        <div id="final-result">
+            <h2>MATCH FINISHED</h2>
+            <div class="winner" id="winnerText"></div>
+            <div id="finalScore"></div>
+            <button class="round-btn" onclick="exportToSheet()" style="background: #238636; margin-top: 15px;">📊 Download Record Sheet</button>
+            <button class="round-btn" onclick="resetMatch()" style="margin-top: 10px;">NEW MATCH</button>
+        </div>
+    </div>
 
-function addRed(){
-  red++;
-  document.getElementById("redScore").innerText = red;
-}
+    <!-- Rules Page -->
+    <div id="rules" class="page">
+        <h1>📋 RULES & VIOLATIONS</h1>
+        <p style="text-align: center; color: #8b949e; margin-bottom: 20px;">Pencak Silat Competition Regulation FEB-2026</p>
 
-function addBlue(){
-  blue++;
-  document.getElementById("blueScore").innerText = blue;
-}
+        <div class="profile-card">
+            <h3 style="color: #3fb950; margin-bottom: 15px;">1. LIGHT VIOLATIONS - Pelanggaran Ringan</h3>
+            <div style="line-height: 1.8; color: #c9d1d9; font-size: 14px;">
+                <strong>Hukuman:</strong> Pembinaan → Teguran → -1 Point<br><br>
+                <strong>Examples:</strong><br>
+                - Kaidah Pencak Silat ka istemal na karna<br>
+                - Gelanggang se bahar nikalna<br>
+                - Bahar waalon se baat karna<br>
+                - 10 sec se zyada passive rehna<br>
+                - Jaan bujhkar peeth dikhana<br>
+                - Dono haath bandh ke pasang karna<br>
+                - Wasit ki baat na manna<br>
+                - Sapuan/Guntingan maarna par opponent na girna<br>
+                - Striking range mein neeche pasang karna<br>
+                - Face ki taraf 5 ungli dikhana - feinting<br>
+                - Pair matras pe hai aur seedha haath se pakadna
+            </div>
+        </div>
 
-</script>
+        <div class="profile-card">
+            <h3 style="color: #f78166; margin-bottom: 15px;">2. MODERATE VIOLATIONS - Pelanggaran Sedang</h3>
+            <div style="line-height: 1.8; color: #c9d1d9; font-size: 14px;">
+                <strong>Hukuman:</strong> Teguran langsung<br><br>
+                <strong>Examples:</strong><br>
+                - Body protector/kapda pakad ke punch/kick marna<br>
+                - Gummul karna, baal ya kerudung kheenchna<br>
+                - Neeche gire opponent ko pair se dabana<br>
+                - Jatuhan ke baad bhi marna<br>
+                - Body protector + upper baju pakad ke jatuhan<br>
+                - Bina attack ke seedha kheenchna<br>
+                - Bahut door se sapuan/guntingan<br>
+                - Jaan bujhkar bahar dhakelna<br>
+                - Invalid target pe grazing attack<br>
+                - Valid se invalid target pe shift karna<br>
+                - Counter-attack jatuhan<br>
+                - Time waste karna - dheere chalna, gear theek karna<br>
+                - 3 min se zyada kapda change karna<br>
+                - Gong ke baad marna<br>
+                - Wasit ke peeche chupna<br>
+                - Wasit ko chhuna<br>
+                - Diving - invalid target dikhana<br>
+                - Defense mein opponent ko chipakna
+            </div>
+        </div>
 
+        <div class="profile-card">
+            <h3 style="color: #da3633; margin-bottom: 15px;">3. SERIOUS VIOLATIONS - Pelanggaran Berat</h3>
+            <div style="line-height: 1.8; color: #c9d1d9; font-size: 14px;">
+                <strong>Hukuman:</strong> Peringatan I, II, III → Disqualification<br><br>
+                <strong>Examples:</strong><br>
+                - Head, neck, kemaluan pe attack - injury ho ya na ho<br>
+                - Wasit ko dhakelna/kheenchna<br>
+                - Knee joint pe direct attack<br>
+                - Single attack to thigh bina awalan/akhiran<br>
+                - Bahar dhakel ke injury karna<br>
+                - Headbutt ya head se attack<br>
+                - Invalid target pe attack se injury<br>
+                - MULAI se pehle ya BERHENTI ke baad maar ke injury<br>
+                - Kaatna aur kharonchna<br>
+                - Kapda pakad ke elbow/knee marna<br>
+                - Gaali dena, thookna, provoke karna<br>
+                - Pile driving - gardan pe giraana<br>
+                - Seedha pakad ke giraana
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <h3 style="color: #9e6a03; margin-bottom: 15px;">4. DISQUALIFICATION - Diskualifikasi</h3>
+            <div style="line-height: 1.8; color: #c9d1d9; font-size: 14px;">
+                <strong>Kab hoti hai:</strong><br>
+                - Peringatan II ke baad Peringatan III milna<br>
+                - Jaan bujhkar serious violation - sportsmanship ke khilaaf<br>
+                - Opponent injured aur khel nahi sakta - doctor confirm kare<br>
+                - Jaan bujhkar opponent ka sar matras pe marna<br>
+                - 3rd call ke baad bhi arena mein na aana<br><br>
+                <strong>Note:</strong> Disqualification sirf Wasit declare kar sakta hai
+            </div>
+        </div>
+
+        <button class="menu-btn" onclick="showPage('home')">Back to Menu</button>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <h1>ABOUT</h1>
+        <div class="profile-card">
+            <h3>Developer</h3>
+            <p><strong>Name:</strong> Aadil</p>
+            <p><strong>Role:</strong> Full Stack Developer</p>
+            <p><strong>Expertise:</strong> Web Apps, Mobile Solutions</p>
+        </div>
+        <div class="profile-card">
+            <h3>App Info</h3>
+            <p><strong>Version:</strong> 2.0</p>
+            <p><strong>Built for:</strong> Pencak Silat Tournaments</p>
+            <p><strong>Features:</strong> Digital Scoring, Timer, Rules, Record Export</p>
+        </div>
+        <button class="menu-btn" onclick="showPage('home')">Back to Menu</button>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact" class="page">
+        <h1>CONTACT</h1>
+        <div class="profile-card">
+            <h3>Get in Touch</h3>
+            <p><strong>Email:</strong> aadil.dev@example.com</p>
+            <p><strong>WhatsApp:</strong> +91 XXXXX XXXXX</p>
+            <p><strong>GitHub:</strong> github.com/fadunotes</p>
+        </div>
+        <div class="profile-card">
+            <h3>Support</h3>
+            <p>For tournament setup or custom features, contact us.</p>
+            <p>Available 24/7 for event support.</p>
+        </div>
+        <button class="menu-btn" onclick="showPage('home')">Back to Menu</button>
+ </div>    <script>
+        let currentPage = 'home';
+        let round = 1;
+        let timeLeft = 120;
+        let timerRunning = false;
+        let timerInterval;
+        let matchActive = false;
+
+        const MAX_ROUNDS = 3;
+        const ROUND_TIME = 120;
+
+        let roundData = {
+            1: { jury1: {red: 0, blue: 0}, jury2: {red: 0, blue: 0}, jury3: {red: 0, blue: 0}, kp: {red: 0, blue: 0}, actions: [] },
+            2: { jury1: {red: 0, blue: 0}, jury2: {red: 0, blue: 0}, jury3: {red: 0, blue: 0}, kp: {red: 0, blue: 0}, actions: [] },
+            3: { jury1: {red: 0, blue: 0}, jury2: {red: 0, blue: 0}, jury3: {red: 0, blue: 0}, kp: {red: 0, blue: 0}, actions: [] }
+        };
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+            currentPage = page;
+        }
+
+        function updateTimer() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerRunning) return;
+            timerRunning = true;
+            matchActive = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('roundStatus').textContent = `Round ${round} - FIGHT!`;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) {
+                    endRound();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            document.getElementById('stopBtn').disabled = true;
+        }
+
+        function startMatch() {
+            if (round > MAX_ROUNDS) return;
+            timeLeft = ROUND_TIME;
+            updateTimer();
+            startTimer();
+        }
+
+        function stopMatch() {
+            stopTimer();
+            matchActive = false;
+            document.getElementById('roundStatus').textContent = `Round ${round} - STOPPED`;
+            if (round < MAX_ROUNDS) {
+                document.getElementById('nextRoundBtn').style.display = 'block';
+            } else {
+                document.getElementById('finishBtn').style.display = 'block';
+            }
+        }
+
+        function endRound() {
+            stopTimer();
+            matchActive = false;
+            document.getElementById('roundStatus').textContent = `Round ${round} - TIME UP`;
+            if (round < MAX_ROUNDS) {
+                document.getElementById('nextRoundBtn').style.display = 'block';
+            } else {
+                document.getElementById('finishBtn').style.display = 'block';
+            }
+        }
+
+        function nextRound() {
+            round++;
+            document.getElementById('currentRound').textContent = round;
+            document.getElementById('nextRoundBtn').style.display = 'none';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('roundStatus').textContent = 'Ready to Start';
+            timeLeft = ROUND_TIME;
+            updateTimer();
+        }
+
+        function calculateRoundScore(r) {
+            const data = roundData[r];
+            const red = data.jury1.red + data.jury2.red + data.jury3.red + data.kp.red;
+            const blue = data.jury1.blue + data.jury2.blue + data.jury3.blue + data.kp.blue;
+            return { red, blue };
+        }
+
+        function updateDisplay() {
+            let totalRed = 0, totalBlue = 0;
+            for (let r = 1; r <= MAX_ROUNDS; r++) {
+                const score = calculateRoundScore(r);
+                totalRed += score.red;
+                totalBlue += score.blue;
+            }
+            document.getElementById('redScore').textContent = totalRed;
+            document.getElementById('blueScore').textContent = totalBlue;
+        }
+
+        function addScore(jury, fighter) {
+            if (!matchActive) {
+                document.getElementById('status').textContent = 'Start round first!';
+                setTimeout(() => document.getElementById('status').textContent = '', 2000);
+                return;
+            }
+            roundData[round][jury][fighter]++;
+            roundData[round].actions.push({
+                round: round,
+                judge: jury.toUpperCase(),
+                fighter: fighter.toUpperCase(),
+                action: '+1 Point',
+                points: 1,
+                time: document.getElementById('timer').textContent
+            });
+            updateDisplay();
+        }
+
+        function addPenalty(fighter) {
+            if (!matchActive) {
+                document.getElementById('status').textContent = 'Start round first!';
+                setTimeout(() => document.getElementById('status').textContent = '', 2000);
+                return;
+            }
+            roundData[round].actions.push({
+                round: round,
+                judge: 'WASIT',
+                fighter: fighter.toUpperCase(),
+                action: 'Penalty',
+                points: -1,
+                time: document.getElementById('timer').textContent
+            });
+            updateDisplay();
+            document.getElementById('status').textContent = `${fighter.toUpperCase()} -1 Penalty`;
+            setTimeout(() => document.getElementById('status').textContent = '', 2000);
+        }
+
+        function finishMatch() {
+            showFinalResult();
+        }
+
+        function showFinalResult() {
+            document.getElementById('final-result').style.display = 'block';
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+
+            let totalRed = 0, totalBlue = 0;
+            for (let r = 1; r <= MAX_ROUNDS; r++) {
+                const score = calculateRoundScore(r);
+                totalRed += score.red;
+                totalBlue += score.blue;
+            }
+
+            const winner = totalRed > totalBlue? 'RED' : totalBlue > totalRed? 'BLUE' : 'DRAW';
+            const winnerEl = document.getElementById('winnerText');
+            winnerEl.textContent = winner === 'DRAW'? 'MATCH DRAW' : `${winner} WINS!`;
+            winnerEl.className = 'winner ' + (winner === 'RED'? 'red' : winner === 'BLUE'? 'blue' : '');
+            document.getElementById('finalScore').textContent = `Final Score: RED ${totalRed} - ${totalBlue} BLUE`;
+        }
+
+        function exportToSheet() {
+            let csvContent = "Match No,Round,Judge,Fighter,Action,Points,Time\n";
+            for(let r = 1; r <= MAX_ROUNDS; r++) {
+                const actions = roundData[r].actions;
+                actions.forEach(a => {
+                    csvContent += `${document.getElementById('matchNo').value},${a.round},${a.judge},${a.fighter},${a.action},${a.points},${a.time}\n`;
+                });
+            }
+            csvContent += "\n\nROUND SUMMARY\n";
+            for(let r = 1; r <= MAX_ROUNDS; r++) {
+                const d = roundData[r];
+                const red = d.jury1.red + d.jury2.red + d.jury3.red + d.kp.red;
+                const blue = d.jury1.blue + d.jury2.blue + d.jury3.blue + d.kp.blue;
+                csvContent += `Round ${r},RED,${red},BLUE,${blue}\n`;
+            }
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${document.getElementById('matchNo').value}_Record.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.getElementById('status').innerHTML = '✅ Record Sheet Download Ho Gayi!';
+            setTimeout(() => document.getElementById('status').innerHTML = '', 3000);
+        }
+
+        function resetMatch() {
+            round = 1;
+            timeLeft = ROUND_TIME;
+            timerRunning = false;
+            matchActive = false;
+            clearInterval(timerInterval);
+            roundData = {
+                1: { jury1: {red: 0, blue: 0}, jury2: {red: 0, blue: 0}, jury3: {red: 0, blue: 0}, kp: {red: 0, blue: 0}, actions: [] },
+                2: { jury1: {red: 0, blue: 0}, jury2: {red: 0, blue: 0}, jury3: {red: 0, blue: 0}, kp: {red: 0, blue: 0}, actions: [] },
+                3: { jury1: {red: 0, blue: 0}, jury2: {red: 0, blue: 0}, jury3: {red: 0, blue: 0}, kp: {red: 0, blue: 0}, actions: [] }
+            };
+            document.getElementById('currentRound').textContent = '1';
+            document.getElementById('final-result').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('stopBtn').style.display = 'block';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('roundStatus').textContent = 'Ready to Start';
+            updateTimer();
+            updateDisplay();
+        }
+
+        updateTimer();
+        updateDisplay();
+    </script>
 </body>
 </html>
